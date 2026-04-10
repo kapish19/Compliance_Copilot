@@ -68,7 +68,7 @@ export default function App() {
   const [input, setInput] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
-  const [activeTab, setActiveTab] = useState<'chat' | 'audit' | 'checker'>('chat');
+  const [activeTab, setActiveTab] = useState<'chat' | 'audit' | 'checker' | 'home'>('home');
   const [checkerResult, setCheckerResult] = useState<ComplianceResult | null>(null);
   const [userRole, setUserRole] = useState<'employee' | 'legal'>('employee');
   const chatEndRef = useRef<HTMLDivElement>(null);
@@ -263,6 +263,19 @@ export default function App() {
         </div>
 
         <nav className="flex-1 p-4 space-y-2">
+          <button 
+            onClick={() => setActiveTab('home')}
+            className={cn(
+              "w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all",
+              activeTab === 'home' ? "bg-indigo-50 text-indigo-700 font-medium" : "text-slate-500 hover:bg-slate-50"
+            )}
+          >
+            <ShieldCheck className="w-5 h-5" />
+            <span>Overview</span>
+          </button>
+
+          <div className="my-4 border-t border-slate-100" />
+
           <div className="mb-6 px-4 py-3 bg-slate-50 rounded-xl border border-slate-100">
             <p className="text-[10px] font-bold text-slate-400 uppercase mb-2 flex items-center gap-1">
               <UserCircle className="w-3 h-3" /> User Role
@@ -389,6 +402,112 @@ export default function App() {
 
         <div className="flex-1 overflow-y-auto p-8">
           <AnimatePresence mode="wait">
+            {activeTab === 'home' && (
+              <motion.div
+                key="home"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="max-w-5xl mx-auto"
+              >
+                {/* Hero Section */}
+                <div className="relative rounded-[3rem] overflow-hidden bg-indigo-600 p-12 text-white mb-12 shadow-2xl shadow-indigo-200">
+                  <div className="absolute top-0 right-0 p-12 opacity-10">
+                    <ShieldCheck className="w-64 h-64 rotate-12" />
+                  </div>
+                  <div className="relative z-10 max-w-2xl">
+                    <motion.div
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.2 }}
+                      className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-500/30 rounded-full text-xs font-bold uppercase tracking-widest mb-6 border border-white/10"
+                    >
+                      <Zap className="w-3 h-3" /> Enterprise Decision Support
+                    </motion.div>
+                    <h1 className="text-5xl font-black leading-tight mb-6">
+                      Compliance Copilot: <br />
+                      <span className="text-indigo-200">The Future of Policy.</span>
+                    </h1>
+                    <p className="text-lg text-indigo-100 mb-8 leading-relaxed">
+                      Transform static, dense corporate policies into a high-precision advisory engine. 
+                      Move beyond simple search to automated compliance verdicts.
+                    </p>
+                    <div className="flex gap-4">
+                      <button 
+                        onClick={() => setActiveTab('chat')}
+                        className="px-8 py-4 bg-white text-indigo-600 rounded-2xl font-bold hover:bg-indigo-50 transition-all shadow-lg flex items-center gap-2"
+                      >
+                        Launch Assistant <ChevronRight className="w-4 h-4" />
+                      </button>
+                      <button 
+                        onClick={() => setActiveTab('checker')}
+                        className="px-8 py-4 bg-indigo-500 text-white rounded-2xl font-bold hover:bg-indigo-400 transition-all border border-white/10"
+                      >
+                        Risk Checker
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Features Grid */}
+                <div className="grid grid-cols-3 gap-8 mb-12">
+                  {[
+                    {
+                      icon: <Scale className="w-6 h-6 text-indigo-600" />,
+                      title: "Decision Mode",
+                      desc: "Provides clear Allowed/Not Allowed verdicts instead of just summarizing text."
+                    },
+                    {
+                      icon: <Zap className="w-6 h-6 text-indigo-600" />,
+                      title: "Two-Stage RAG",
+                      desc: "Vector search combined with LLM re-ranking for industry-leading precision."
+                    },
+                    {
+                      icon: <History className="w-6 h-6 text-indigo-600" />,
+                      title: "Audit Ready",
+                      desc: "Every answer is cited and logged with full performance telemetry for compliance."
+                    }
+                  ].map((feature, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.4 + i * 0.1 }}
+                      className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-all"
+                    >
+                      <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center mb-6">
+                        {feature.icon}
+                      </div>
+                      <h3 className="font-bold text-slate-800 mb-2">{feature.title}</h3>
+                      <p className="text-sm text-slate-500 leading-relaxed">{feature.desc}</p>
+                    </motion.div>
+                  ))}
+                </div>
+
+                {/* Stats Section */}
+                <div className="bg-slate-900 rounded-[3rem] p-12 text-white flex items-center justify-between">
+                  <div>
+                    <h4 className="text-indigo-400 font-bold uppercase tracking-widest text-xs mb-2">Performance Metrics</h4>
+                    <h3 className="text-3xl font-bold">Optimized for Enterprise</h3>
+                  </div>
+                  <div className="flex gap-12">
+                    <div className="text-center">
+                      <p className="text-4xl font-black text-white mb-1">80%</p>
+                      <p className="text-xs text-slate-400 uppercase font-bold">Time Saved</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-4xl font-black text-white mb-1">95%</p>
+                      <p className="text-xs text-slate-400 uppercase font-bold">Precision</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-4xl font-black text-white mb-1">100%</p>
+                      <p className="text-xs text-slate-400 uppercase font-bold">Traceable</p>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
             {activeTab === 'chat' && (
               <motion.div 
                 key="chat"
